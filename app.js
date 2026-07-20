@@ -25,6 +25,7 @@ var running = false;
 var endTime = 0;                    // Date.now() ms when remaining hits 0, while running
 var speakerNum = 1;
 var ticker = null;
+var barFrame = null;               // requestAnimationFrame handle for smooth bar
 
 // --- persistence ---
 function loadPerSpeaker() {
@@ -83,8 +84,20 @@ function render() {
   el.app.dataset.state = stateFor(remaining);
   el.pause.textContent = running ? "Pause" : (remaining < perSpeaker || remaining <= 0 ? "Resume" : "Start");
 
-  var pct = Math.max(0, Math.min(1, remaining / perSpeaker)) * 100;
-  el.fill.style.width = remaining <= 0 ? "100%" : pct + "%";
+  // While running, the animation frame owns the bar (fractional, per-frame);
+  // otherwise reflect the current whole-second position.
+  if (!running) el.fill.style.clipPath = barClip(remaining);
+}
+
+function barClip(secs) {
+  var frac = secs <= 0 ? 1 : Math.max(0, Math.min(1, secs / perSpeaker));
+  return "inset(0 " + (1 - frac) * 100 + "% 0 0 round 999px)";
+}
+
+function paintBar() {
+  var exact = (endTime - Date.now()) / 1000;
+  el.fill.style.clipPath = barClip(exact);
+  barFrame = requestAnimationFrame(paintBar);
 }
 
 // --- timer control ---
@@ -96,11 +109,14 @@ function tick() {
 function startTicker() {
   endTime = Date.now() + remaining * 1000;
   ticker = setInterval(tick, 250);
+  barFrame = requestAnimationFrame(paintBar);
 }
 
 function stopTicker() {
   clearInterval(ticker);
   ticker = null;
+  cancelAnimationFrame(barFrame);
+  barFrame = null;
 }
 
 function resume() {
