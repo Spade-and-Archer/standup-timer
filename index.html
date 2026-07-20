@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Standup Timer</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app" id="app" data-state="normal">
+    <section class="card">
+      <div class="card-head">
+        <span class="eyebrow">Standup</span>
+        <span class="speaker" id="speaker">Speaker 1</span>
+      </div>
+      <div class="timer">
+        <div class="time" id="time">02:00</div>
+        <div class="time-status" id="status">2:00 remaining</div>
+      </div>
+      <div class="bar"><div class="bar-fill" id="fill"></div></div>
+      <div class="controls">
+        <button class="btn btn-secondary" id="pause">Start</button>
+        <button class="btn btn-primary" id="next">Next speaker →</button>
+      </div>
+      <div class="hint">Press <kbd>Space</kbd> to advance to the next speaker</div>
+    </section>
+
+    <section class="card">
+      <label class="field">
+        <span class="field-label">Seconds per speaker</span>
+        <input type="number" id="per-speaker" min="10" step="10" value="120">
+      </label>
+      <p class="field-note">Saved on this device — remembered next time.</p>
+    </section>
+
+    <section class="card">
+      <span class="eyebrow">End-of-meeting items</span>
+      <form class="add-row" id="add-form">
+        <input type="text" id="item-input" placeholder="Add an item…" autocomplete="off">
+        <button class="btn btn-secondary" type="submit">Add</button>
+      </form>
+      <ul class="items" id="items"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
